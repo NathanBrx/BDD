@@ -2,6 +2,7 @@ package fds.hai811i.bdd;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class RegistrationFragment extends Fragment {
@@ -50,8 +52,8 @@ public class RegistrationFragment extends Fragment {
         cbMusique = view.findViewById(R.id.cb_musique);
         cbLecture = view.findViewById(R.id.cb_lecture);
 
-        etList = List.of(etLogin, etPassword, etNom, etPrenom, etDob, etPhone, etEmail);
-        cbList = List.of(cbSport, cbMusique, cbLecture);
+        etList = Arrays.asList(etLogin, etPassword, etNom, etPrenom, etDob, etPhone, etEmail);
+        cbList = Arrays.asList(cbSport, cbMusique, cbLecture);
 
         Button btnClear = view.findViewById(R.id.btn_clear);
         Button btnSubmit = view.findViewById(R.id.btn_submit);
@@ -89,27 +91,65 @@ public class RegistrationFragment extends Fragment {
         });
 
         btnSubmit.setOnClickListener(v -> {
-            // récupération des données
-            String login = etLogin.getText().toString();
-            String password = etPassword.getText().toString();
-            String nom = etNom.getText().toString();
-            String prenom = etPrenom.getText().toString();
-            String dob = etDob.getText().toString();
-            String phone = etPhone.getText().toString();
-            String email = etEmail.getText().toString();
+            String login = etLogin.getText().toString().trim();
+            String password = etPassword.getText().toString().trim();
+            String nom = etNom.getText().toString().trim();
+            String prenom = etPrenom.getText().toString().trim();
+            String dob = etDob.getText().toString().trim();
+            String phone = etPhone.getText().toString().trim();
+            String email = etEmail.getText().toString().trim();
+
+            // required fields not empty
+            if (login.isEmpty() || password.isEmpty() || email.isEmpty()) {
+                Toast.makeText(getContext(), "Veuillez remplir les champs obligatoires", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // login max 10 char
+            if (!login.matches("^[a-zA-Z].{0,9}$")) {
+                etLogin.setError("Doit commencer par une lettre et max 10 caractères");
+                etLogin.requestFocus();
+                return;
+            }
+
+            // login does not exist
+            if (db.checkUser(login)) {
+                etLogin.setError("Ce login est déjà utilisé, choisissez-en un autre");
+                etLogin.requestFocus();
+                return;
+            }
+
+            // passwors > 6 char
+            if (password.length() < 6) {
+                etPassword.setError("Le mot de passe doit contenir au moins 6 caractères");
+                etPassword.requestFocus();
+                return;
+            }
+
+            // email format ok
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                etEmail.setError("Veuillez entrer une adresse email valide");
+                etEmail.requestFocus();
+                return;
+            }
+
+            // phone format ok
+            if (!Patterns.PHONE.matcher(phone).matches()) {
+                etPhone.setError("Le numéro de téléphone n'est pas valide");
+                etPhone.requestFocus();
+                return;
+            }
 
             StringBuilder interests = new StringBuilder();
             if (cbSport.isChecked()) interests.append("Sport ");
             if (cbMusique.isChecked()) interests.append("Musique ");
             if (cbLecture.isChecked()) interests.append("Lecture ");
 
-            // save dans la db
             boolean isInserted = db.insertData(login, password, nom, prenom, dob, phone, email, interests.toString());
 
             if (isInserted) {
-                Toast.makeText(getContext(), "Données sauvegardées en BDD !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Inscription réussie !", Toast.LENGTH_SHORT).show();
 
-                // données à envoyer au fragment 2
                 String summary = "Login : " + login + "\n" +
                         "Nom : " + nom + "\n" +
                         "Prénom : " + prenom + "\n" +
@@ -118,7 +158,6 @@ public class RegistrationFragment extends Fragment {
                         "Email : " + email + "\n" +
                         "Centres d'intérêt : " + (interests.length() > 0 ? interests.toString() : "Aucun");
 
-                // lancement fragment 2 avec la synthèse
                 DisplayFragment displayFragment = new DisplayFragment();
                 Bundle args = new Bundle();
                 args.putString("SUMMARY_DATA", summary);
@@ -129,7 +168,7 @@ public class RegistrationFragment extends Fragment {
                         .addToBackStack(null)
                         .commit();
             } else {
-                Toast.makeText(getContext(), "Erreur lors de la sauvegarde", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Erreur critique lors de la sauvegarde", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -143,12 +182,14 @@ public class RegistrationFragment extends Fragment {
     }
 
     private void clearFields() {
-        for (EditText e : etList) {
-            e.setText("");
+        if (etList != null) {
+            for (EditText e : etList) {
+                e.setText("");
+            }
         }
-        for (CheckBox cb : cbList) {
-            if (cb.isChecked()) {
-                cb.toggle();
+        if (cbList != null) {
+            for (CheckBox cb : cbList) {
+                cb.setChecked(false);
             }
         }
     }

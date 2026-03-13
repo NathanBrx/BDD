@@ -54,4 +54,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + TABLE_NAME);
         db.execSQL("DELETE FROM sqlite_sequence WHERE name='" + TABLE_NAME + "'");
     }
+
+    public boolean checkUser(String login) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE LOGIN=?", new String[]{login});
+        boolean exists = (cursor.getCount() > 0);
+        cursor.close();
+        return exists;
+    }
+    public boolean checkUserAndPass(String login, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE LOGIN=? AND PASSWORD=?", new String[]{login, password});
+        boolean exists = (cursor.getCount() > 0);
+        cursor.close();
+        return exists;
+    }
 }
