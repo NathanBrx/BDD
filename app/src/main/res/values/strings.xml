@@ -18,4 +18,6 @@
     <string name="display_db">Afficher la db</string>
     <string name="db_content_title">Contenu de la base de données</string>
     <string name="emptydb">Vider la base de données</string>
+    <string name="connexion">Connexion</string>
+    <string name="new_user">Nouvelle Inscription</string>
 </resources>
