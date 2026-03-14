@@ -20,4 +20,5 @@
     <string name="emptydb">Vider la base de données</string>
     <string name="connexion">Connexion</string>
     <string name="new_user">Nouvelle Inscription</string>
+    <string name="welcome">Bienvenue !</string>
 </resources>
