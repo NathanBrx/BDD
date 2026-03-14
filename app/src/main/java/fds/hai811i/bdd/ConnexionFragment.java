@@ -48,7 +48,7 @@ public class ConnexionFragment extends Fragment {
             if (isValidUser) {
                 Toast.makeText(getContext(), "Bienvenue !", Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(getActivity(), PlanningActivity.class);
+                Intent intent = new Intent(getActivity(), CalendarActivity.class);
                 intent.putExtra("USER_LOGIN", login);
                 startActivity(intent);
 
