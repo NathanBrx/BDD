@@ -21,4 +21,14 @@
     <string name="connexion">Connexion</string>
     <string name="new_user">Nouvelle Inscription</string>
     <string name="welcome">Bienvenue !</string>
+    <string name="planning">Planning du jour</string>
+    <string name="creneau1">08h-10h :</string>
+    <string name="creneau2">10h-12h :</string>
+    <string name="creneau3">14h-16h :</string>
+    <string name="creneau4">16h-18h :</string>
+    <string name="submit_and_save">Valider et Sauvegarder</string>
+    <string name="planning_synthesis">Synthèse du planning</string>
+    <string name="no_planning">Aucun planning pour cette date.\nAppuyez sur le + pour en créer un.</string>
+    <string name="planning_delete">Supprimer ce planning</string>
+    <string name="back">Retour</string>
 </resources>

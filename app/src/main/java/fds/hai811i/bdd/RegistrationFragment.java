@@ -145,7 +145,7 @@ public class RegistrationFragment extends Fragment {
             if (cbMusique.isChecked()) interests.append("Musique ");
             if (cbLecture.isChecked()) interests.append("Lecture ");
 
-            boolean isInserted = db.insertData(login, password, nom, prenom, dob, phone, email, interests.toString());
+            boolean isInserted = db.insertUser(login, password, nom, prenom, dob, phone, email, interests.toString());
 
             if (isInserted) {
                 Toast.makeText(getContext(), "Inscription réussie !", Toast.LENGTH_SHORT).show();
